@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Inject, forwardRef, BadRequestException, NotFoundException } from '@nestjs/common';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from "util";
 import { CreateUserDto } from '../dtos/create-user.dto';
@@ -16,39 +16,36 @@ export class AuthService {
     ){};
 
     async register(dto: CreateUserDto) {
-        const validatedUser = await this.validateUser(dto);
-        let user;
-        if (!(validatedUser instanceof UpdateUserDto)){
-            user = await this.userService.create(validatedUser);
-        }
-        return user;
+        await this.validateUser(dto.email, dto.username)
+        dto.password = await this.hashNewPassword(dto.password);
+        return this.userService.createUser(dto);
     }
 
-    async validateUser(user: UpdateUserDto | CreateUserDto | User){
-        if (await this.userService.findOne(user.email)){
-            throw new BadRequestException('email in use');
+    async validateUser(email: string, username: string){
+        if (await this.userService.findUserByEmail(email)){
+            throw new BadRequestException('Email in use');
         }
-        if (await this.userService.findOneByUsername(user.username)){
+        if (await this.userService.findUserByUsername(username)){
             throw new BadRequestException('Username taken');
         }
-        if (user.password){
-        const hashedPassword = await this.hashNewPassword(user.password);
-        user.password = hashedPassword;
-        }
-        return user;
     }
 
     async login(email: string, password: string) {
-        const user = await this.userService.findOne(email).select('+password').populate('personalPlans');
+        const user = await this.userService.findUserByEmail(email);
         if (!user){
             throw new NotFoundException("User not found");
         }
         console.log(user);
-        const [salt] = user.password.split('.', 1);
-        const passwordHash = await this.hashPassword(password, salt);
-        if (passwordHash !== user.password)
-            throw new BadRequestException('Incorrect password');
+        this.validatePassword(password, user.password);
         return user;
+    }
+
+    private async validatePassword(inputPassword: string, databasePassword: string){
+        const [salt] = databasePassword.split('.', 1);
+        const passwordHash = await this.hashPassword(inputPassword, salt);
+        if (passwordHash !== databasePassword){
+            throw new BadRequestException('Incorrect password');
+        }
     }
 
     private async hashPassword(password: string, salt: string){
