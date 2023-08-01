@@ -6,9 +6,10 @@ import { HikesModule } from './hikes/hikes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from 'typeorm.config';
 import { BookingsModule } from './bookings/bookings.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UsersModule, HikesModule, TypeOrmModule.forRoot(typeOrmConfig), BookingsModule],
+  imports: [UsersModule, HikesModule, TypeOrmModule.forRoot(typeOrmConfig), BookingsModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

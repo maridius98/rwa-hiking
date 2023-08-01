@@ -1,10 +1,9 @@
 import { Injectable, Inject, forwardRef, BadRequestException, NotFoundException } from '@nestjs/common';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from "util";
-import { CreateUserDto } from '../dtos/create-user.dto';
-import { User } from '../users.entity';
-import { UpdateUserDto } from '../dtos/update-user.dto';
-import { UsersService } from '../users.service';
+import { CreateUserDto } from 'src/users/dtos/create-user.dto';
+import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 const scrypt = promisify(_scrypt);
 
@@ -12,13 +11,22 @@ const scrypt = promisify(_scrypt);
 export class AuthService {
     constructor(
         @Inject(forwardRef(() => UsersService))
-        private readonly userService: UsersService
+        private readonly userService: UsersService,
+        private readonly jwtService: JwtService
     ){};
 
     async register(dto: CreateUserDto) {
         await this.validateUser(dto.email, dto.username)
         dto.password = await this.hashNewPassword(dto.password);
-        return this.userService.createUser(dto);
+        const user = await this.userService.createUser(dto);
+        const payload = { sub: user.id, username: user.username};
+        return {
+            access_token: await this.jwtService.signAsync(payload)
+        }
+    }
+
+    async logout(){
+        
     }
 
     async validateUser(email: string, username: string){
@@ -37,7 +45,10 @@ export class AuthService {
         }
         console.log(user);
         this.validatePassword(password, user.password);
-        return user;
+        const payload = { sub: user.id, username: user.username};
+        return {
+            access_token: await this.jwtService.signAsync(payload)
+        }
     }
 
     private async validatePassword(inputPassword: string, databasePassword: string){

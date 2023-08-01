@@ -1,2 +1,11 @@
 ### Create a new User
-POST http://localhost:3000/users/register
+POST http://localhost:3000/auth/register
+content-type: application/json
+
+{
+    "fullName": "trev trev2",
+    "username": "trev2",
+    "email": "treva@gmail.com",
+    "password": "trev",
+    "gender": "Other"
+}
