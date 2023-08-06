@@ -4,6 +4,7 @@ import { promisify } from "util";
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { LoginUserDto } from 'src/users/dtos/login-user.dto';
 
 const scrypt = promisify(_scrypt);
 
@@ -26,7 +27,9 @@ export class AuthService {
     }
 
     async logout(){
-        
+        return {
+            access_token: await this.jwtService
+        }
     }
 
     async validateUser(email: string, username: string){
@@ -38,13 +41,13 @@ export class AuthService {
         }
     }
 
-    async login(email: string, password: string) {
-        const user = await this.userService.findUserByEmail(email);
+    async login(loginCredentials: LoginUserDto) {
+        const user = await this.userService.findUserByEmail(loginCredentials.email);
         if (!user){
             throw new NotFoundException("User not found");
         }
         console.log(user);
-        this.validatePassword(password, user.password);
+        this.validatePassword(loginCredentials.password, user.password);
         const payload = { sub: user.id, username: user.username};
         return {
             access_token: await this.jwtService.signAsync(payload)
