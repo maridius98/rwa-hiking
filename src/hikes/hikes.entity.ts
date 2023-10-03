@@ -1,4 +1,5 @@
 import { Booking } from 'src/bookings/bookings.entity';
+import { Region } from 'src/region/region.entity';
 import { User } from 'src/users/users.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, ManyToOne } from 'typeorm';
 
@@ -27,6 +28,12 @@ export class Hike {
 
   @Column()
   isDue: boolean;
+
+  @Column()
+  travelCost: number;
+
+  @ManyToOne(() => Region, region => region.hikes)
+  region: Region;
 
   @ManyToOne(() => User, guide => guide.hikes)
   guide: User;

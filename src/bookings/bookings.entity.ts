@@ -14,10 +14,7 @@ export class Booking {
   isDue: boolean;
 
   @Column()
-  toPay: number;
-
-  @Column()
-  paidAmount: number;
+  isPaid: boolean;
   
   @ManyToOne(() => User, user => user.bookings)
   hiker: User;

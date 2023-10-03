@@ -17,6 +17,9 @@ export class CreateUserDto {
   @MinLength(4)
   password: string;
 
+  @IsNotEmpty()
+  isGuide: boolean = false;
+
   @IsOptional()
   birthDate?: Date;
 

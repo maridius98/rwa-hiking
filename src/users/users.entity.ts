@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm';
 import { Booking } from 'src/bookings/bookings.entity';
 import { Hike } from 'src/hikes/hikes.entity';
+import { Region } from 'src/region/region.entity';
 
 @Entity()
 export class User {
@@ -23,10 +24,13 @@ export class User {
   gender: string;
 
   @Column()
-  isGuide: boolean;
+  isGuide: boolean = false;
 
   @OneToMany(() => Hike, hike => hike.guide)
   hikes: Hike[];
+
+  @ManyToMany(() => Region, region => region.guides)
+  regions: Region[];
 
   @OneToMany(() => Booking, booking => booking.hiker)
   bookings: Booking[];

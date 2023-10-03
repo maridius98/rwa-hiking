@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,6 +18,10 @@ export class UsersService {
 
     async findUserByUsername(username: string){
         return this.repo.findOneBy({username});
+    }
+
+    async findUserById(id: number){
+        return this.repo.findOneBy({id});
     }
 
     async createUser(dto: CreateUserDto | UpdateUserDto){

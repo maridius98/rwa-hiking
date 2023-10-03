@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, Request, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { HikesService } from './hikes.service';
 import { CreateHikeDto } from './dtos/create-hike.dto';
 import { GuideGuard } from 'src/users/guards/guide.guard';
@@ -12,8 +12,8 @@ export class HikesController {
     ) {}
 
     @Post('/create')
-    async createHike(@Body() dto: CreateHikeDto) {
-        const hike = await this.hikesService.createHike(dto);
+    async createHike(@Body() dto: CreateHikeDto, @Request() req: UserToken) {
+        const hike = await this.hikesService.createHike(dto, req);
         return hike;
     }
 

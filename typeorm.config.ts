@@ -1,5 +1,6 @@
 import { Booking } from "src/bookings/bookings.entity";
 import { Hike } from "src/hikes/hikes.entity";
+import { Region } from "src/region/region.entity";
 import { User } from "src/users/users.entity";
 import { DataSourceOptions } from "typeorm";
 
@@ -9,6 +10,6 @@ export const typeOrmConfig: DataSourceOptions = {
     port: 5432,
     username: 'postgres',
     password: 'mypassword',
-    entities: [User, Booking, Hike],
+    entities: [User, Booking, Hike, Region],
     synchronize: true
 }

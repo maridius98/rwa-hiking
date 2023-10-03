@@ -13,6 +13,7 @@ export class JwtMiddleware implements NestMiddleware {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
+      console.log("notoken");
       throw new UnauthorizedException();
     }
     

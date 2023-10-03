@@ -26,6 +26,11 @@ export class AuthService {
         }
     }
 
+    async registerGuide(dto: CreateUserDto){
+        dto.isGuide = true;
+        return this.register(dto);
+    }
+
     async logout(){
         return {
             access_token: await this.jwtService
@@ -46,9 +51,8 @@ export class AuthService {
         if (!user){
             throw new NotFoundException("User not found");
         }
-        console.log(user);
-        this.validatePassword(loginCredentials.password, user.password);
-        const payload = { sub: user.id, username: user.username};
+        await this.validatePassword(loginCredentials.password, user.password);
+        const payload: UserToken = { id: user.id, username: user.username, isGuide: user.isGuide};
         return {
             access_token: await this.jwtService.signAsync(payload)
         }

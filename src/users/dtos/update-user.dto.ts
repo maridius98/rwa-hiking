@@ -6,6 +6,7 @@ export class UpdateUserDto {
     bio?: string;
     type?: string;
     link?: string;
+    isGuide?: boolean;
     trainings?: Number;
     birthDate?: Date;
     gender?: string;

@@ -4,8 +4,47 @@ content-type: application/json
 
 {
     "fullName": "trev trev2",
-    "username": "trev2",
-    "email": "treva@gmail.com",
+    "username": "trev2s",
+    "email": "trevas@gmail.com",
     "password": "trev",
     "gender": "Other"
 }
+
+### login
+
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "treva@gmail.com",
+    "password": "trev"
+}
+
+
+### Guide create
+
+POST http://localhost:3000/auth/guide
+content-type: application/json
+
+{
+    "fullName": "guide1",
+    "username": "guide1",
+    "email": "guide1@gmail.com",
+    "password": "guide123",
+    "gender": "Other"
+}
+
+### Guide login
+
+POST http://localhost:3000/auth/login
+content-type: application/json
+
+{
+    "email": "guide1@gmail.com",
+    "password": "guide123"
+}
+
+### WhoAmI
+
+GET http://localhost:3000/users/loggeduser
+

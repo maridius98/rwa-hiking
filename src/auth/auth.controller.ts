@@ -20,4 +20,10 @@ export class AuthController {
         const user = await this.authService.login(dto);
         return user;
     }
+
+    @Post('/guide')
+    async createGuide(@Body() dto: CreateUserDto){
+        const user = await this.authService.registerGuide(dto);
+        return user;
+    }
 }

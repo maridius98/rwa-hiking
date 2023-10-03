@@ -1,0 +1,2 @@
+uslov: mora da postoji hike, i user da bude ulogovan
+kreira se booking tako sto se poveze user sa hajkom koji nije zavrsen

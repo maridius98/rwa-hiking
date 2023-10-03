@@ -7,6 +7,9 @@ export class CreateHikeDto {
   
     @IsOptional()
     description: string;
+
+    @IsNotEmpty()
+    regionId: number;
   
     @IsNotEmpty()
     difficulty: string;

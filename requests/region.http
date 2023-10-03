@@ -1,0 +1,10 @@
+### Create a new Region
+POST http://localhost:3000/region/create
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsInVzZXJuYW1lIjoiZ3VpZGUxIiwiaXNHdWlkZSI6dHJ1ZSwiaWF0IjoxNjk2MDA2ODc2LCJleHAiOjE2OTYwMDY5MzZ9.m6Rh4urZtELgNk7W_KYr17sHahXTIMwaalMKfDFoevo
+
+{
+    "name": "Morava",
+    "NUTS": "E32",
+    "areas": ["Stara Planina", "Suva Planina", "Malosiste"]
+}
