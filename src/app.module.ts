@@ -9,11 +9,13 @@ import { BookingsModule } from './bookings/bookings.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtMiddleware } from './users/middleware/current-user.middleware';
 import { RegionModule } from './region/region.module';
+import { TokenService } from './token/token.service';
+import { TokenModule } from './token/token.module';
 
 @Module({
-  imports: [UsersModule, HikesModule, TypeOrmModule.forRoot(typeOrmConfig), BookingsModule, AuthModule, RegionModule],
+  imports: [UsersModule, HikesModule, TypeOrmModule.forRoot(typeOrmConfig), BookingsModule, AuthModule, RegionModule, TokenModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TokenService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

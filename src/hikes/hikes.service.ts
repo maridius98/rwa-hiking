@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateHikeDto } from './dtos/create-hike.dto';
 import { Repository } from 'typeorm';
 import { Hike } from './hikes.entity';
@@ -42,6 +42,12 @@ export class HikesService {
             throw new NotFoundException("Hike doesn't exist");
         }
         return hike;
+    }
+
+    async verifyIsDue(hike: Hike){
+        if (hike.isDue){
+            throw new BadRequestException("You cannot interact with due hikes");
+        }
     }
 
     async deleteHike(id: number){
