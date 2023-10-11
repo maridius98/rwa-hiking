@@ -1,3 +1,40 @@
 Prvo treba da se register korisnik i da bude guide
 guide treba da napravi regiju
 guide pravi hike sa tom regijom
+
+const difficultyFactor = lang * long;
+if (difficultyFactor > 5 000 000)
+    difficulty = medium
+if (lang * long > 10 000 000)
+    difficulty = hard
+if (lang * long > 15 000 000)
+    difficulty = extreme
+
+
+
+
+difficulty formula 
+15km = medium
+10km + 500lat = medium
+15km + 800lat = hard
+20km + 500lat = hard
+lat > 1000 & long > 15 = extreme
+lat > 1500 & long > 10 = extreme
+
+15000 = medium
+10000 + 500x = medium
+15000 + 800x = hard
+15000 + 1000x = extreme
+
+15000 = 10000 + 500x
+500x = 5000
+x = 10
+
+
+
+15000 + 800x = 20000 + 500x
+800x = 5000 + 500x
+5000 = 300x
+
+15000 * 800x = 20000 * 500x 
+12000000x = 1000000x

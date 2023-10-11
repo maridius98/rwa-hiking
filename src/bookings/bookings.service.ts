@@ -21,7 +21,6 @@ export class BookingsService {
         const user = await this.userService.findUserById(userId);
         const booking = new Booking();
         booking.isPaid = isPaid;
-        booking.isDue = false;
         booking.date = new Date();
         this.hikeService.verifyIsDue(hike);
         booking.hike = hike;
@@ -37,8 +36,11 @@ export class BookingsService {
     }
 
     async getBookingsOnHike(hikeId: number){
-        const hike = await this.hikeService.getHike(hikeId);
-        const bookings = this.repo.find(hike)
+        const bookings = this.repo
+        .createQueryBuilder()
+        .where('booking.hike = :hikeId', {hikeId})
+        .getRawMany();
+        return bookings;
     }
 
     async findBooking(id: number){

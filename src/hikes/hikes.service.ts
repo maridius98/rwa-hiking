@@ -16,6 +16,26 @@ export class HikesService {
         private readonly regionService: RegionService,
         private readonly userService: UsersService
     ) {}
+
+    private readonly extremeDifficultyThreshold = 15000000;
+    private readonly hardDifficultyThreshold = 10000000;
+    private readonly mediumDifficultyThreshold = 5000000;
+
+    calculateDifficulty(hike: Hike) : string{
+        const difficultyFactor = hike.distance * hike.elevationGain;
+        if (difficultyFactor > this.extremeDifficultyThreshold) {
+            return "Extreme";
+        }
+        else if (difficultyFactor > this.hardDifficultyThreshold){
+            return "Hard";
+        }
+        else if (difficultyFactor > this.mediumDifficultyThreshold){
+            return "Medium";
+        }
+        else {
+            return "Easy";
+        }
+    }
     
     async createHike(dto: CreateHikeDto, req: UserToken){
         const guide = await this.userService.findUserById(req.id);
