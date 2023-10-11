@@ -14,6 +14,12 @@ export class BookingsController {
         return booking;
     }
 
+    @Get('/mybookings')
+    async getMyBookings(@Request() user: UserToken){
+        const bookings = await this.bookingService.getMyBookings(user.id);
+        return bookings;
+    }
+
     @UseGuards(GuideGuard)
     @Get('/:hikeId')
     async getBookingsOnHike(@Param() hikeId: number){

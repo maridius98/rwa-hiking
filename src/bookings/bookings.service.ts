@@ -35,6 +35,14 @@ export class BookingsService {
         return await this.repo.save(booking);
     }
 
+    async getMyBookings(userId: number){
+        const bookings = this.repo
+            .createQueryBuilder()
+            .where('booking.user = :userId', {userId})
+            .getRawMany();
+        return bookings;
+    }
+
     async getBookingsOnHike(hikeId: number){
         const bookings = this.repo
         .createQueryBuilder()

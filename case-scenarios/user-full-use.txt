@@ -1,3 +1,6 @@
 1. user napravi nalog
 2. user gleda hikove (potrebno je moci filtrirati hajkove)
 3. user napravi booking za hike 
+4. user vidi svoje bookings
+5. user otkaze booking
+6. user obrise nalog ig

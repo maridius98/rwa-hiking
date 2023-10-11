@@ -1,12 +1,14 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateHikeDto } from './dtos/create-hike.dto';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Hike } from './hikes.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EditHikeDto } from './dtos/edit-hike.dto';
 import { RegionService } from 'src/region/region.service';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/users.entity';
+import { HikeParams} from './dtos/hike-filter.interface';
+import { QueryParams } from './dtos/query-params.interface';
 
 @Injectable()
 export class HikesService {
@@ -62,6 +64,95 @@ export class HikesService {
             throw new NotFoundException("Hike doesn't exist");
         }
         return hike;
+    }
+
+    async filterHikes(queryString: string){
+        const params = this.parseQueryString(queryString);
+        let query = this.repo.createQueryBuilder("hike");
+
+        if (params.difficulty){
+            query = query.andWhere("hike.difficulty = :difficulty", {difficulty: params.difficulty});
+        }
+
+        if (params.distance){
+            const parsedParameterList = this.parseComparisonFilter(params.distance);
+            parsedParameterList.forEach(p => {
+                query = query.andWhere(p.queryString, {distance: p.queryValue});
+            })
+        }
+
+        if (params.elevationGain) {
+            const parsedParameterList = this.parseComparisonFilter(params.elevationGain);
+            parsedParameterList.forEach(p => {
+                query = query.andWhere(p.queryString, {elevationGain: p.queryValue});
+            })
+        }
+
+        if (params.search){
+            query = query.andWhere("hike.name like :name", {name: `%${params.search}`});
+        }
+
+        if (params.sort){
+            const [field, order] = params.sort.split('_');
+            query = query.orderBy(`hike.${field}`, this.SQLOrderByParse(order));
+        }
+
+        if (params.region){
+            query = query.andWhere("hike.region = :region", {region: params.region});
+        }
+
+        const hikes = await query.limit(10).getMany();
+
+        return hikes;
+    }
+
+    parseSortFilter(sortParameter: string){
+  
+        
+    }
+
+
+    parseComparisonFilter(comparisonParameter: string){
+        const [field] = comparisonParameter.split('_', 1);
+        const distanceParams = comparisonParameter.split('.');
+        const queryParamsList: QueryParams[] = [];
+        distanceParams.forEach(param => {
+            const [operator, value] = param.split('_');
+            const sqlOperator = this.SQLOperatorParse(operator);
+            const queryParams: QueryParams = {
+                queryString: `hike.${field} ${sqlOperator} :value`,
+                queryValue: value
+            } 
+            queryParamsList.push(queryParams);
+        });
+        return queryParamsList;
+    }
+
+    SQLOrderByParse(orderByString: string){
+        if (orderByString === 'DESC')
+            return 'DESC'
+        return 'ASC';
+    }
+
+    parseQueryString(query: string){
+        const params = new URLSearchParams(query);
+        return new HikeParams(params);
+        // const difficultyParams = hikeParams.difficulty.split('.', 2);
+        // difficultyParams.forEach(param => {
+        //     const [field, operator, value] = param.split('_');
+        //     const sqlOperator = this.SQLOperatorParse(operator);
+        // })
+        // const [field, operator, value] = hikeParams.
+    }
+
+    SQLOperatorParse(operator: string): string{
+        if (operator === 'GT'){
+            return '>';
+        }
+        if (operator === 'LT'){
+            return '<'
+        }
+        return '=';
     }
 
     async verifyIsDue(hike: Hike){
