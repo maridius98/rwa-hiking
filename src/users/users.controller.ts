@@ -8,4 +8,10 @@ export class UsersController {
         private usersService: UsersService
     ) {}
         
+    @Get('/loggeduser')
+    async WhoAmI(@Request() req){
+        const user: UserToken = req.user;
+        console.log(await this.usersService.findUserById(user.id));
+    }
+   // GET http://localhost:3000/users/loggeduser
 }

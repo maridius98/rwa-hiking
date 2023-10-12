@@ -5,6 +5,9 @@ import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from 'src/users/dtos/login-user.dto';
+import { CreateGuideDto } from 'src/users/dtos/create-guide.dto';
+import { RegionService } from 'src/region/region.service';
+import { Region } from 'src/region/region.entity';
 
 const scrypt = promisify(_scrypt);
 
@@ -13,7 +16,8 @@ export class AuthService {
     constructor(
         @Inject(forwardRef(() => UsersService))
         private readonly userService: UsersService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly regionService: RegionService
     ){};
 
     async register(dto: CreateUserDto) {
@@ -26,8 +30,12 @@ export class AuthService {
         }
     }
 
-    async registerGuide(dto: CreateUserDto){
+    async registerGuide(dto: CreateGuideDto){
         dto.isGuide = true;
+        console.log(dto);
+        const regionPromises = dto.regions.map(region => 
+            this.regionService.findRegion(region));
+        dto.regions = await Promise.all(regionPromises);
         return this.register(dto);
     }
 
@@ -51,8 +59,10 @@ export class AuthService {
         if (!user){
             throw new NotFoundException("User not found");
         }
+        console.log(user);
         await this.validatePassword(loginCredentials.password, user.password);
         const payload: UserToken = { id: user.id, username: user.username, isGuide: user.isGuide};
+        console.log(payload);
         return {
             access_token: await this.jwtService.signAsync(payload)
         }

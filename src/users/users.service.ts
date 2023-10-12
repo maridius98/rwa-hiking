@@ -28,6 +28,19 @@ export class UsersService {
         return user;
     }
 
+    async findGuideById(id: number){
+        const guide = await this.repo.findOne({
+            where: {
+                id: id
+            },
+            relations: ['regions']
+        });
+        if (!guide){
+            throw new NotFoundException("Guide doesn't exist");
+        }
+        return guide;
+    }
+
     async createUser(dto: CreateUserDto | UpdateUserDto){
         return await this.repo.save({...dto});
     }

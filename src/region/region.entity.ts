@@ -1,6 +1,6 @@
 import { Hike } from "src/hikes/hikes.entity";
 import { User } from "src/users/users.entity";
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Region {
@@ -21,5 +21,6 @@ export class Region {
     hikes: Hike[];
 
     @ManyToMany(() => User, guide => guide.regions)
+    @JoinTable()
     guides: User[];
 }

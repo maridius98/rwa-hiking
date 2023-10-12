@@ -12,8 +12,9 @@ export class HikesController {
 
     @UseGuards(GuideGuard)
     @Post('/create')
-    async createHike(@Body() dto: CreateHikeDto, @Request() req: UserToken) {
-        const hike = await this.hikesService.createHike(dto, req);
+    async createHike(@Body() dto: CreateHikeDto, @Request() req) {
+        const user : UserToken = req.user;
+        const hike = await this.hikesService.createHike(dto, user);
         return hike;
     }
 

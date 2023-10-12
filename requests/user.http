@@ -27,11 +27,12 @@ POST http://localhost:3000/auth/guide
 content-type: application/json
 
 {
-    "fullName": "guide1",
-    "username": "guide1",
-    "email": "guide1@gmail.com",
+    "fullName": "guide3",
+    "username": "guide3",
+    "email": "guide3@gmail.com",
     "password": "guide123",
-    "gender": "Other"
+    "gender": "Other",
+    "regions": [1, 2]
 }
 
 ### Guide login
@@ -40,11 +41,13 @@ POST http://localhost:3000/auth/login
 content-type: application/json
 
 {
-    "email": "guide1@gmail.com",
+    "email": "guide3@gmail.com",
     "password": "guide123"
 }
 
 ### WhoAmI
 
 GET http://localhost:3000/users/loggeduser
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInVzZXJuYW1lIjoiZ3VpZGUzIiwiaXNHdWlkZSI6dHJ1ZSwiaWF0IjoxNjk3MTAyMjg1LCJleHAiOjE2OTc3MDcwODV9.0hmnPPp7ecB0mmoYqwZktU_q4nbkjMQliK7PImsnLTg
+
 

@@ -13,6 +13,7 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule
   ],
   controllers: [HikesController],
-  providers: [HikesService]
+  providers: [HikesService],
+  exports: [HikesService]
 })
 export class HikesModule {}

@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from 'src/users/dtos/login-user.dto';
+import { CreateGuideDto } from 'src/users/dtos/create-guide.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,7 +23,7 @@ export class AuthController {
     }
 
     @Post('/guide')
-    async createGuide(@Body() dto: CreateUserDto){
+    async createGuide(@Body() dto: CreateGuideDto){
         const user = await this.authService.registerGuide(dto);
         return user;
     }

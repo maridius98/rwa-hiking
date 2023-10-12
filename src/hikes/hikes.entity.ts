@@ -14,7 +14,7 @@ export class Hike {
   @Column()
   description: string;
 
-  @Column()
+  @Column({default: "Easy"})
   difficulty: string;
 
   @Column()
@@ -26,7 +26,7 @@ export class Hike {
   @Column()
   date: Date;
 
-  @Column()
+  @Column({default: false})
   isDue: boolean;
 
   @Column()

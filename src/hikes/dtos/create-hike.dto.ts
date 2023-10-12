@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsPositive, MinLength } from "class-validator";
+import { IsDateString, IsNotEmpty, IsOptional, IsPositive, MinLength } from "class-validator";
 
 export class CreateHikeDto {
     @IsNotEmpty()
@@ -11,10 +11,7 @@ export class CreateHikeDto {
     @IsNotEmpty()
     @IsPositive()
     regionId: number;
-  
-    @IsNotEmpty()
-    difficulty: string;
-  
+    
     @IsPositive()
     @IsNotEmpty()
     distance: number;
@@ -22,7 +19,12 @@ export class CreateHikeDto {
     @IsPositive()
     @IsNotEmpty()
     elevationGain: number;
+
+    @IsPositive()
+    @IsNotEmpty()
+    travelCost: number;
   
     @IsNotEmpty()
-    date: Date;
+    @IsDateString()
+    date: string | Date;
 };

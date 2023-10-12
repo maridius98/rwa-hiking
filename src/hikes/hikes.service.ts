@@ -24,6 +24,7 @@ export class HikesService {
     private readonly mediumDifficultyThreshold = 5000000;
 
     calculateDifficulty(hike: Hike) : string{
+        console.log("Merimo tezinu");
         const difficultyFactor = hike.distance * hike.elevationGain;
         if (difficultyFactor > this.extremeDifficultyThreshold) {
             return "Extreme";
@@ -40,16 +41,18 @@ export class HikesService {
     }
     
     async createHike(dto: CreateHikeDto, req: UserToken){
-        const guide = await this.userService.findUserById(req.id);
+        const guide = await this.userService.findGuideById(req.id);
         const region = await this.regionService.findRegion(dto.regionId);
-        if (!guide.regions.includes(region)){
+        const hasRegion = guide.regions.filter(p => p.id == region.id);
+        if (hasRegion.length == 0){
             throw new UnauthorizedException(`You cannot host a hike without being assigned to the region`);
         }
         const hike = new Hike();
+        dto.date = new Date(dto.date);
         Object.assign(hike, dto);
         hike.region = region;
         hike.guide = guide;
-        return await this.repo.save(hike);
+        return await this.repo.insert(hike);
     }
 
     async editHike(id: number, dto: EditHikeDto){
