@@ -1,13 +1,23 @@
 POST http://localhost:3000/hikes/create
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInVzZXJuYW1lIjoiZ3VpZGUzIiwiaXNHdWlkZSI6dHJ1ZSwiaWF0IjoxNjk3MTAyMjg1LCJleHAiOjE2OTc3MDcwODV9.0hmnPPp7ecB0mmoYqwZktU_q4nbkjMQliK7PImsnLTg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInVzZXJuYW1lIjoiZ3VpZGUzIiwiaXNHdWlkZSI6dHJ1ZSwiaWF0IjoxNjk3MjA4MzQyLCJleHAiOjE2OTc4MTMxNDJ9.-WS5Hjr4tO5ghgtBEPhygOxP4FKIpBLSlcKcVj55NmY
 
 {
-    "name": "Uspon na trem3",
-    "description": "Klasican uspon",
+    "name": "Midzor",
+    "description": "Krece se od obliznjeg sela",
     "regionId": 1,
-    "distance": 10000,
-    "elevationGain": 1100,
-    "travelCost": 2000,
-    "date": "2023-10-15"
+    "distance": 14500,
+    "elevationGain": 600,
+    "travelCost": 15000,
+    "date": "2023-12-01"
 }
+
+###Delete hike by ID
+
+DELETE http://localhost:3000/hikes/8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInVzZXJuYW1lIjoiZ3VpZGUzIiwiaXNHdWlkZSI6dHJ1ZSwiaWF0IjoxNjk3MjA4MzQyLCJleHAiOjE2OTc4MTMxNDJ9.-WS5Hjr4tO5ghgtBEPhygOxP4FKIpBLSlcKcVj55NmY
+
+###Hike Query
+
+GET http://localhost:3000/hikes/search?difficulty=Easy&distance=LT_11000.GT_7000&sort=elevationGain_DESC&search=Uspon
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInVzZXJuYW1lIjoiZ3VpZGUzIiwiaXNHdWlkZSI6dHJ1ZSwiaWF0IjoxNjk3MjA4MzQyLCJleHAiOjE2OTc4MTMxNDJ9.-WS5Hjr4tO5ghgtBEPhygOxP4FKIpBLSlcKcVj55NmY

@@ -47,12 +47,11 @@ export class HikesService {
         if (hasRegion.length == 0){
             throw new UnauthorizedException(`You cannot host a hike without being assigned to the region`);
         }
-        const hike = new Hike();
         dto.date = new Date(dto.date);
-        Object.assign(hike, dto);
+        const hike = this.repo.create(dto);
         hike.region = region;
         hike.guide = guide;
-        return await this.repo.insert(hike);
+        return await this.repo.save(hike);
     }
 
     async editHike(id: number, dto: EditHikeDto){
@@ -69,86 +68,81 @@ export class HikesService {
         return hike;
     }
 
+    async verifyHikeOfGuide(guideId: number, hikeId: number) {
+        const hike = await this.repo.findOne({
+            where: {
+                id: hikeId,
+                guide: {id: guideId}
+                }
+            });
+        if (!hike){
+            throw new UnauthorizedException("Guide didn't host this hike");
+        }
+        return hike;
+    }
+
     async filterHikes(queryString: string){
         const params = this.parseQueryString(queryString);
         let query = this.repo.createQueryBuilder("hike");
-
         if (params.difficulty){
             query = query.andWhere("hike.difficulty = :difficulty", {difficulty: params.difficulty});
         }
 
         if (params.distance){
             const parsedParameterList = this.parseComparisonFilter(params.distance);
-            parsedParameterList.forEach(p => {
-                query = query.andWhere(p.queryString, {distance: p.queryValue});
-            })
+            query = query.andWhere(`hike.distance ${parsedParameterList[0].queryOperator} :distanceOne`, {distanceOne: parsedParameterList[0].queryValue});
+            if (parsedParameterList.length==2) {
+                query = query.andWhere(`hike.distance ${parsedParameterList[1].queryOperator} :distanceTwo`, {distanceTwo: parsedParameterList[1].queryValue});
+            }
         }
 
         if (params.elevationGain) {
             const parsedParameterList = this.parseComparisonFilter(params.elevationGain);
-            parsedParameterList.forEach(p => {
-                query = query.andWhere(p.queryString, {elevationGain: p.queryValue});
-            })
+            query = query.andWhere(`hike.elevationGain ${parsedParameterList[0].queryOperator} :elevationGainOne`, {elevationGainOne: parsedParameterList[0].queryValue});
+            if (parsedParameterList.length==2) {
+                query = query.andWhere(`hike.elevationGain ${parsedParameterList[1].queryOperator} :elevationGainTwo`, {elevationGainTwo: parsedParameterList[1].queryValue});
+            }
         }
 
         if (params.search){
-            query = query.andWhere("hike.name like :name", {name: `%${params.search}`});
+            query = query.andWhere("hike.name like :name", {name: `%${params.search}%`});
         }
 
         if (params.sort){
             const [field, order] = params.sort.split('_');
-            query = query.orderBy(`hike.${field}`, this.SQLOrderByParse(order));
+            query = query.orderBy(`hike.${field}`, this.parseSqlOrderBy(order));
         }
 
         if (params.region){
             query = query.andWhere("hike.region = :region", {region: params.region});
         }
 
-        const hikes = await query.limit(10).getMany();
-
+        console.log(query.getSql());
+        const hikes = await query.getMany();
         return hikes;
     }
 
-    parseSortFilter(sortParameter: string){
-  
-        
-    }
-
-
     parseComparisonFilter(comparisonParameter: string){
-        const [field] = comparisonParameter.split('_', 1);
         const distanceParams = comparisonParameter.split('.');
         const queryParamsList: QueryParams[] = [];
         distanceParams.forEach(param => {
             const [operator, value] = param.split('_');
-            const sqlOperator = this.SQLOperatorParse(operator);
+            const sqlOperator = this.parseSqlOperator(operator);
             const queryParams: QueryParams = {
-                queryString: `hike.${field} ${sqlOperator} :value`,
-                queryValue: value
+                queryOperator: sqlOperator,
+                queryValue: +value
             } 
             queryParamsList.push(queryParams);
         });
         return queryParamsList;
     }
 
-    SQLOrderByParse(orderByString: string){
-        if (orderByString === 'DESC')
-            return 'DESC'
-        return 'ASC';
-    }
-
     parseQueryString(query: string){
         const params = new URLSearchParams(query);
         return new HikeParams(params);
-        // const difficultyParams = hikeParams.difficulty.split('.', 2);
-        // difficultyParams.forEach(param => {
-        //     const [field, operator, value] = param.split('_');
-        //     const sqlOperator = this.SQLOperatorParse(operator);
-        // })
-        // const [field, operator, value] = hikeParams.
     }
 
-    SQLOperatorParse(operator: string): string{
+    parseSqlOperator(operator: string): string{
         if (operator === 'GT'){
             return '>';
         }
@@ -158,14 +152,21 @@ export class HikesService {
         return '=';
     }
 
+    parseSqlOrderBy(orderByString: string){
+        if (orderByString === 'DESC')
+            return 'DESC'
+        return 'ASC';
+    }
+
     async verifyIsDue(hike: Hike){
         if (hike.isDue){
             throw new BadRequestException("You cannot interact with due hikes");
         }
     }
 
-    async deleteHike(id: number){
-        await this.repo.delete(id);
+    async deleteHike(hikeId: number, userToken: UserToken){
+        const hike = await this.verifyHikeOfGuide(userToken.id, hikeId);
+        await this.repo.delete(hike.id);
         return true;
     }
 }

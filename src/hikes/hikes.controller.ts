@@ -27,12 +27,13 @@ export class HikesController {
 
     @UseGuards(GuideGuard)
     @Delete('/:id')
-    async deleteHike(@Param() id: number): Promise<boolean>{
-        const success: boolean = await this.hikesService.deleteHike(id);
+    async deleteHike(@Param("id") id: number, @Request() req): Promise<boolean>{
+        const user = req.user;
+        const success = await this.hikesService.deleteHike(id, user);
         return success;
     }
 
-    @Get('/filterHikes')
+    @Get('/search')
     async filterHikes(@Query() query: string){
         const hikes = this.hikesService.filterHikes(query);
         return hikes;

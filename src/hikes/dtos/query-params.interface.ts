@@ -1,4 +1,4 @@
 export interface QueryParams {
-    queryString: string;
-    queryValue: number | string;
+    queryOperator: string;
+    queryValue: number;
 }

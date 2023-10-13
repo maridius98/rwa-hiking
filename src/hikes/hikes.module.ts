@@ -5,6 +5,7 @@ import { Hike } from './hikes.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RegionModule } from 'src/region/region.module';
 import { UsersModule } from 'src/users/users.module';
+import { HikeSubscriber } from './hikes.subscriber';
 
 @Module({
   imports: [
@@ -13,7 +14,10 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule
   ],
   controllers: [HikesController],
-  providers: [HikesService],
-  exports: [HikesService]
+  providers: [
+    HikesService,
+    HikeSubscriber
+  ],
+  exports: [HikesService],
 })
 export class HikesModule {}
