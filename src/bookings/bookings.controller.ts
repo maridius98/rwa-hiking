@@ -8,15 +8,15 @@ export class BookingsController {
         private readonly bookingService: BookingsService
     ){};
 
-    @Post('/create/:isPaid')
-    async createBooking(@Param() isPaid: boolean,  @Param() hikeId: number, @Request() user: UserToken){
-        const booking = await this.bookingService.createBooking(isPaid, hikeId, user.id);
+    @Post('/create/:hikeId/:isPaid')
+    async createBooking(@Param("isPaid") isPaid: boolean,  @Param("hikeId") hikeId: number, @Request() req){
+        const booking = await this.bookingService.createBooking(isPaid, hikeId, req.user.id);
         return booking;
     }
 
     @Get('/mybookings')
-    async getMyBookings(@Request() user: UserToken){
-        const bookings = await this.bookingService.getMyBookings(user.id);
+    async getMyBookings(@Request() req){
+        const bookings = await this.bookingService.getMyBookings(req.user.id);
         return bookings;
     }
 
@@ -28,14 +28,14 @@ export class BookingsController {
     }
 
     @Put('/:bookingId')
-    async payBooking(@Param() bookingId: number, @Request() user: UserToken){
-        const booking = await this.bookingService.payBooking(user.id, bookingId);
+    async payBooking(@Param() bookingId: number, @Request() req){
+        const booking = await this.bookingService.payBooking(req.user.id, bookingId);
         return booking;
     }
 
     @Delete('/:bookingId')
-    async removeBooking(@Param() bookingId: number, @Request() user: UserToken){
-        await this.bookingService.removeBooking(bookingId, user.id);
+    async removeBooking(@Param('bookingId') bookingId: number, @Request() req){
+        await this.bookingService.removeBooking(bookingId, req.user.id);
         return; 
     }
 

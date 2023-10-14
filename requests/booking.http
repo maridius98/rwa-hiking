@@ -1,0 +1,12 @@
+### Create booking
+
+POST http://localhost:3000/bookings/create/8/true
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcm5hbWUiOiJ0cmV2MiIsImlzR3VpZGUiOmZhbHNlLCJpYXQiOjE2OTcyOTM1NDYsImV4cCI6MTY5Nzg5ODM0Nn0.X69foEiunz7MxQpvMsz9UuknH5h8eL-QYEnP9CDQk2c
+
+### Get loggeduser bookings
+GET http://localhost:3000/bookings/mybookings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcm5hbWUiOiJ0cmV2MiIsImlzR3VpZGUiOmZhbHNlLCJpYXQiOjE2OTcyOTM1NDYsImV4cCI6MTY5Nzg5ODM0Nn0.X69foEiunz7MxQpvMsz9UuknH5h8eL-QYEnP9CDQk2c
+
+### Delete booking
+DELETE http://localhost:3000/bookings/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcm5hbWUiOiJ0cmV2MiIsImlzR3VpZGUiOmZhbHNlLCJpYXQiOjE2OTcyOTM1NDYsImV4cCI6MTY5Nzg5ODM0Nn0.X69foEiunz7MxQpvMsz9UuknH5h8eL-QYEnP9CDQk2c

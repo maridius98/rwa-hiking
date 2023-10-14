@@ -10,7 +10,7 @@ export class Booking {
   @Column()
   date: Date;
 
-  @Column()
+  @Column({default: false})
   isDue: boolean;
 
   @Column({default: false})

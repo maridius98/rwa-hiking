@@ -25,21 +25,22 @@ export class BookingsService {
         this.hikeService.verifyIsDue(hike);
         booking.hike = hike;
         booking.hiker = user;
+        return await this.repo.save(booking);
     }
 
     async payBooking(userId: number, bookingId: number){
-        const booking = await this.findBooking(bookingId);
-        const user = await this.userService.findUserById(userId);
-        this.verifyUserFromBooking(booking, user);
+        const booking = await this.getBookingWithUser(bookingId, userId);
         booking.isPaid = true;
         return await this.repo.save(booking);
     }
 
     async getMyBookings(userId: number){
-        const bookings = this.repo
-            .createQueryBuilder()
-            .where('booking.user = :userId', {userId})
-            .getRawMany();
+        const bookings = this.repo.find({
+            where: {
+                hiker: {id: userId}
+            },
+            relations: ['hike']
+        });
         return bookings;
     }
 
@@ -59,10 +60,21 @@ export class BookingsService {
         return booking;
     }
 
+    async getBookingWithUser(id: number, hikerId: number){
+        const booking = this.repo.findOne({
+            where : {
+                id: id,
+                hiker: {id: hikerId}
+            }
+        });
+        if (!booking){
+            throw new UnauthorizedException("You are not permitted to access this booking");
+        }
+        return booking;
+    }
+
     async removeBooking(bookingId: number, userId: number){
-        const booking = await this.findBooking(bookingId);
-        const user = await this.userService.findUserById(userId);
-        this.verifyUserFromBooking(booking, user);
+        const booking = await this.getBookingWithUser(bookingId, userId);
         this.verifyIsDue(booking);
         this.repo.delete(booking.id);
     }
@@ -70,12 +82,6 @@ export class BookingsService {
     async lockBooking(hike: Hike, booking: Booking){
         booking.isDue = hike.isDue;
         this.repo.save(booking);
-    }
-
-    private verifyUserFromBooking(booking: Booking, user: User){
-        if (booking.hiker!=user){
-            throw new UnauthorizedException("You are not permitted to access this booking");
-        }
     }
 
     private verifyIsDue(booking: Booking){

@@ -19,5 +19,5 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInVzZXJuY
 
 ###Hike Query
 
-GET http://localhost:3000/hikes/search?difficulty=Easy&distance=LT_11000.GT_7000&sort=elevationGain_DESC&search=Uspon
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsInVzZXJuYW1lIjoiZ3VpZGUzIiwiaXNHdWlkZSI6dHJ1ZSwiaWF0IjoxNjk3MjA4MzQyLCJleHAiOjE2OTc4MTMxNDJ9.-WS5Hjr4tO5ghgtBEPhygOxP4FKIpBLSlcKcVj55NmY
+GET http://localhost:3000/hikes/search?difficulty=Easy&distance=LT_11000.GT_7000&sort=elevationGain_DESC
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcm5hbWUiOiJ0cmV2MiIsImlzR3VpZGUiOmZhbHNlLCJpYXQiOjE2OTcyOTM1NDYsImV4cCI6MTY5Nzg5ODM0Nn0.X69foEiunz7MxQpvMsz9UuknH5h8eL-QYEnP9CDQk2c
