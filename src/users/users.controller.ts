@@ -1,6 +1,7 @@
 import { Body, Controller, ExecutionContext, Get, Post, Req, Request } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
+import { TokenHolder } from 'src/token/token-holder.interface';
 
 @Controller('users')
 export class UsersController {
@@ -9,9 +10,8 @@ export class UsersController {
     ) {}
         
     @Get('/loggeduser')
-    async WhoAmI(@Request() req){
-        const user: UserToken = req.user;
+    async WhoAmI(@Request() req: TokenHolder){
+        const user = req.user;
         console.log(await this.usersService.findUserById(user.id));
     }
-   // GET http://localhost:3000/users/loggeduser
 }

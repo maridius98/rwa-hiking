@@ -3,6 +3,7 @@ import { HikesService } from './hikes.service';
 import { CreateHikeDto } from './dtos/create-hike.dto';
 import { GuideGuard } from 'src/users/guards/guide.guard';
 import { EditHikeDto } from './dtos/edit-hike.dto';
+import { TokenHolder } from 'src/token/token-holder.interface';
 
 @Controller('hikes')
 export class HikesController {
@@ -12,24 +13,22 @@ export class HikesController {
 
     @UseGuards(GuideGuard)
     @Post('/create')
-    async createHike(@Body() dto: CreateHikeDto, @Request() req) {
-        const user : UserToken = req.user;
-        const hike = await this.hikesService.createHike(dto, user);
+    async createHike(@Body() dto: CreateHikeDto, @Request() req: TokenHolder) {
+        const hike = await this.hikesService.createHike(dto, req.user.id);
         return hike;
     }
 
     @UseGuards(GuideGuard)
-    @Put('/:id')
-    async editHike(@Body() dto: EditHikeDto, @Param() id: number){
-        const hike = await this.hikesService.editHike(id, dto);
+    @Put('/:hikeId')
+    async editHike(@Body() dto: EditHikeDto, @Param() hikeId: number, @Request() req: TokenHolder){
+        const hike = await this.hikesService.editHike(hikeId, dto, req.user.id);
         return hike;   
     }
 
     @UseGuards(GuideGuard)
-    @Delete('/:id')
-    async deleteHike(@Param("id") id: number, @Request() req): Promise<boolean>{
-        const user = req.user;
-        const success = await this.hikesService.deleteHike(id, user);
+    @Delete('/:hikeId')
+    async deleteHike(@Param("hikeId") hikeId: number, @Request() req: TokenHolder): Promise<boolean>{
+        const success = await this.hikesService.deleteHike(hikeId, req.user.id);
         return success;
     }
 

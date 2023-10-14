@@ -7,7 +7,6 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from 'src/users/dtos/login-user.dto';
 import { CreateGuideDto } from 'src/users/dtos/create-guide.dto';
 import { RegionService } from 'src/region/region.service';
-import { Region } from 'src/region/region.entity';
 
 const scrypt = promisify(_scrypt);
 
@@ -59,7 +58,6 @@ export class AuthService {
         if (!user){
             throw new NotFoundException("User not found");
         }
-        console.log(user);
         await this.validatePassword(loginCredentials.password, user.password);
         const payload: UserToken = { id: user.id, username: user.username, isGuide: user.isGuide};
         console.log(payload);

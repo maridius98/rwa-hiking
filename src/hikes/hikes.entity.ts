@@ -1,7 +1,7 @@
 import { Booking } from 'src/bookings/bookings.entity';
 import { Region } from 'src/region/region.entity';
 import { User } from 'src/users/users.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, OneToOne, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Hike {

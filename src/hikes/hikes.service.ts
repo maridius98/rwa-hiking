@@ -1,12 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateHikeDto } from './dtos/create-hike.dto';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Hike } from './hikes.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EditHikeDto } from './dtos/edit-hike.dto';
 import { RegionService } from 'src/region/region.service';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/users.entity';
+import { UsersService } from 'src/users/users.service'; 
 import { HikeParams} from './dtos/hike-filter.interface';
 import { QueryParams } from './dtos/query-params.interface';
 
@@ -23,8 +22,7 @@ export class HikesService {
     private readonly hardDifficultyThreshold = 10000000;
     private readonly mediumDifficultyThreshold = 5000000;
 
-    calculateDifficulty(hike: Hike) : string{
-        console.log("Merimo tezinu");
+    calculateDifficulty(hike: Hike) {
         const difficultyFactor = hike.distance * hike.elevationGain;
         if (difficultyFactor > this.extremeDifficultyThreshold) {
             return "Extreme";
@@ -40,8 +38,8 @@ export class HikesService {
         }
     }
     
-    async createHike(dto: CreateHikeDto, req: UserToken){
-        const guide = await this.userService.findGuideById(req.id);
+    async createHike(dto: CreateHikeDto, guideId: number){
+        const guide = await this.userService.findGuideById(guideId);
         const region = await this.regionService.findRegion(dto.regionId);
         const hasRegion = guide.regions.filter(p => p.id == region.id);
         if (hasRegion.length == 0){
@@ -54,8 +52,9 @@ export class HikesService {
         return await this.repo.save(hike);
     }
 
-    async editHike(id: number, dto: EditHikeDto){
-        const existingHike = this.getHike(id);
+    async editHike(hikeId: number, dto: EditHikeDto, guideId: number){
+        await this.verifyHikeOfGuide(guideId, hikeId);
+        const existingHike = this.getHike(hikeId);
         const newHike = {...existingHike, ...dto};
         return await this.repo.save({...newHike});
     }
@@ -78,7 +77,6 @@ export class HikesService {
         if (!hike){
             throw new UnauthorizedException("Guide didn't host this hike");
         }
-        return hike;
     }
 
     async filterHikes(queryString: string){
@@ -122,7 +120,19 @@ export class HikesService {
         return hikes;
     }
 
-    parseComparisonFilter(comparisonParameter: string){
+    async verifyIsDue(hike: Hike){
+        if (hike.isDue){
+            throw new BadRequestException("You cannot interact with due hikes");
+        }
+    }
+
+    async deleteHike(hikeId: number, guideId: number){
+        await this.verifyHikeOfGuide(guideId, hikeId);
+        await this.repo.delete(hikeId);
+        return true;
+    }
+
+    private parseComparisonFilter(comparisonParameter: string){
         const distanceParams = comparisonParameter.split('.');
         const queryParamsList: QueryParams[] = [];
         distanceParams.forEach(param => {
@@ -137,36 +147,29 @@ export class HikesService {
         return queryParamsList;
     }
 
-    parseQueryString(query: string){
+    private parseQueryString(query: string){
         const params = new URLSearchParams(query);
         return new HikeParams(params);
     }
 
-    parseSqlOperator(operator: string): string{
+    private parseSqlOperator(operator: string): string{
         if (operator === 'GT'){
             return '>';
         }
         if (operator === 'LT'){
             return '<'
         }
-        return '=';
-    }
-
-    parseSqlOrderBy(orderByString: string){
-        if (orderByString === 'DESC')
-            return 'DESC'
-        return 'ASC';
-    }
-
-    async verifyIsDue(hike: Hike){
-        if (hike.isDue){
-            throw new BadRequestException("You cannot interact with due hikes");
+        else {
+            throw new BadRequestException(`Invalid comparison operator ${operator}`);
         }
     }
 
-    async deleteHike(hikeId: number, userToken: UserToken){
-        const hike = await this.verifyHikeOfGuide(userToken.id, hikeId);
-        await this.repo.delete(hike.id);
-        return true;
+    private parseSqlOrderBy(orderByString: string){
+        if (orderByString === 'DESC' || orderByString === 'ASC') {
+            return orderByString;
+        }
+        else {
+            throw new BadRequestException(`Invalid orderBy parameter ${orderByString}`)
+        }
     }
 }
