@@ -80,6 +80,7 @@ export class HikesService {
     }
 
     async filterHikes(queryString: string){
+        console.log(queryString);
         const params = this.parseQueryString(queryString);
         let query = this.repo.createQueryBuilder("hike");
         if (params.difficulty){
@@ -114,8 +115,6 @@ export class HikesService {
         if (params.region){
             query = query.andWhere("hike.region = :region", {region: params.region});
         }
-
-        console.log(query.getSql());
         const hikes = await query.getMany();
         return hikes;
     }
@@ -132,11 +131,17 @@ export class HikesService {
         return true;
     }
 
-    private parseComparisonFilter(comparisonParameter: string){
+    parseComparisonFilter(comparisonParameter: string){
         const distanceParams = comparisonParameter.split('.');
         const queryParamsList: QueryParams[] = [];
         distanceParams.forEach(param => {
             const [operator, value] = param.split('_');
+            if (!Number(value)){
+                throw new BadRequestException(`Value of ${value} is not a number`);
+            }
+            if (+value < 0){
+                throw new BadRequestException(`Value of ${value} must be a positive integer`);
+            }
             const sqlOperator = this.parseSqlOperator(operator);
             const queryParams: QueryParams = {
                 queryOperator: sqlOperator,
@@ -147,12 +152,12 @@ export class HikesService {
         return queryParamsList;
     }
 
-    private parseQueryString(query: string){
+    parseQueryString(query: string){
         const params = new URLSearchParams(query);
         return new HikeParams(params);
     }
 
-    private parseSqlOperator(operator: string): string{
+    parseSqlOperator(operator: string): string{
         if (operator === 'GT'){
             return '>';
         }
@@ -164,7 +169,7 @@ export class HikesService {
         }
     }
 
-    private parseSqlOrderBy(orderByString: string){
+    parseSqlOrderBy(orderByString: string){
         if (orderByString === 'DESC' || orderByString === 'ASC') {
             return orderByString;
         }
