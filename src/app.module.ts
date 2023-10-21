@@ -4,14 +4,22 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { HikesModule } from './hikes/hikes.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfig } from 'typeorm.config';
 import { BookingsModule } from './bookings/bookings.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtMiddleware } from './users/middleware/current-user.middleware';
 import { RegionModule } from './region/region.module';
+import { TypeOrmConfigService } from 'typeorm.config.service';
 
 @Module({
-  imports: [UsersModule, HikesModule, TypeOrmModule.forRoot(typeOrmConfig), BookingsModule, AuthModule, RegionModule],
+  imports: [
+    UsersModule,
+    HikesModule, 
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService
+    }), 
+    BookingsModule, 
+    AuthModule, 
+    RegionModule],
   controllers: [AppController],
   providers: [AppService],
 })

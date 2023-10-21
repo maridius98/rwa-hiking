@@ -4,12 +4,13 @@ import { Region } from "src/region/region.entity";
 import { User } from "src/users/users.entity";
 import { DataSourceOptions } from "typeorm";
 
-export const typeOrmConfig: DataSourceOptions = {
+export const typeOrmConfigDevelopment: DataSourceOptions = {
     type: 'postgres',
     host: 'localhost',
     port: 5432,
     username: 'postgres',
     password: 'mypassword',
+    database: 'hiking_development_db',
     entities: [User, Booking, Hike, Region],
     synchronize: true
 }
