@@ -5,33 +5,33 @@ import { Region } from 'src/region/region.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @Column()
-  username: string;
+    @Column()
+    username: string;
 
-  @Column()
-  fullName: string;
+    @Column()
+    fullName: string;
 
-  @Column({select: false})
-  password: string;
+    @Column({select: false})
+    password: string;
 
-  @Column()
-  email: string;
+    @Column()
+    email: string;
 
-  @Column()
-  gender: string;
+    @Column()
+    gender: string;
 
-  @Column()
-  isGuide: boolean = false;
+    @Column()
+    isGuide: boolean = false;
 
-  @OneToMany(() => Hike, hike => hike.guide)
-  hikes: Hike[];
+    @OneToMany(() => Hike, hike => hike.guide)
+    hikes: Hike[];
 
-  @ManyToMany(() => Region, region => region.guides)
-  regions: Region[];
+    @ManyToMany(() => Region, region => region.guides)
+    regions: Region[];
 
-  @OneToMany(() => Booking, booking => booking.hiker)
-  bookings: Booking[];
+    @OneToMany(() => Booking, booking => booking.hiker)
+    bookings: Booking[];
 }

@@ -23,7 +23,7 @@ export class AuthService {
         await this.validateUser(dto.email, dto.username)
         dto.password = await this.hashNewPassword(dto.password);
         const user = await this.userService.createUser(dto);
-        const payload = { sub: user.id, username: user.username};
+        const payload = {sub: user.id, username: user.username};
         return {
             access_token: await this.jwtService.signAsync(payload)
         }
@@ -59,7 +59,7 @@ export class AuthService {
             throw new NotFoundException("User not found");
         }
         await this.validatePassword(loginCredentials.password, user.password);
-        const payload: UserToken = { id: user.id, username: user.username, isGuide: user.isGuide};
+        const payload: UserToken = { id: user.id, username: user.username, isGuide: user.isGuide };
         console.log(payload);
         return {
             access_token: await this.jwtService.signAsync(payload)

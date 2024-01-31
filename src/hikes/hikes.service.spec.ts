@@ -37,7 +37,7 @@ describe('HikesService', () => {
     }).compile();
 
     service = module.get<HikesService>(HikesService);
-});
+  });
 
   it('should calculate "Extreme" difficulty for a hike with extreme factor', () => {
     const hike = {

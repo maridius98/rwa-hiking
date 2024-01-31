@@ -46,9 +46,9 @@ export class BookingsService {
 
     async getBookingsOnHike(hikeId: number){
         const bookings = this.repo
-        .createQueryBuilder()
-        .where('booking.hike = :hikeId', {hikeId})
-        .getRawMany();
+            .createQueryBuilder()
+            .where('booking.hike = :hikeId', {hikeId})
+            .getMany();
         return bookings;
     }
 

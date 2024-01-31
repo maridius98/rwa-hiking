@@ -47,6 +47,6 @@ export class UsersService {
     }
 
     async createUser(dto: CreateUserDto | UpdateUserDto){
-        return await this.repo.save({...dto});
+        return await this.repo.save(dto);
     }
 }

@@ -4,8 +4,8 @@ content-type: application/json
 
 {
     "fullName": "trev trev2",
-    "username": "trev2s",
-    "email": "trevas@gmail.com",
+    "username": "trev2sa",
+    "email": "trevasasd@gmail.com",
     "password": "trev",
     "gender": "Other"
 }

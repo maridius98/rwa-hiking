@@ -54,7 +54,7 @@ export class HikesService {
 
     async editHike(hikeId: number, dto: EditHikeDto, guideId: number){
         await this.verifyHikeOfGuide(guideId, hikeId);
-        const existingHike = this.getHike(hikeId);
+        const existingHike = await this.getHike(hikeId);
         const newHike = {...existingHike, ...dto};
         return await this.repo.save({...newHike});
     }
